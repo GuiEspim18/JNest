@@ -209,4 +209,53 @@ public class DataNest {
         return dg;
     }
 
+    public DataNest merge(DataNest other, String onColumn) {
+        Integer indexThis = headerMap.get(onColumn);
+        Integer indexOther = other.headerMap.get(onColumn);
+
+        if (indexThis == null || indexOther == null) {
+            throw new RuntimeException("Column " + onColumn + " does not exist in one of the DataNests!");
+        }
+
+        // Criar um novo DataNest para armazenar o resultado da mesclagem
+        DataNest mergedDataNest = new DataNest();
+
+        // Combinar os cabeçalhos das duas tabelas, cuidando para evitar duplicatas
+        List<Object> mergedHeader = new ArrayList<>(headerMap.keySet());
+        for (String header : other.headerMap.keySet()) {
+            if (!mergedHeader.contains(header)) {
+                mergedHeader.add(header);
+            }
+        }
+        mergedDataNest.setHeader(mergedHeader);
+
+        // Mapa para armazenar as linhas do "other" DataNest por valor da chave
+        Map<Object, List<Object>> otherRowsMap = new HashMap<>();
+        for (List<Object> row : other.dataNest) {
+            Object key = row.get(indexOther);
+            otherRowsMap.put(key, row);
+        }
+
+        // Iterar pelas linhas do DataNest atual e mesclar com o "other" DataNest
+        for (List<Object> row : dataNest) {
+            Object key = row.get(indexThis);
+            List<Object> otherRow = otherRowsMap.get(key);
+
+            if (otherRow != null) {
+                List<Object> mergedRow = new ArrayList<>(row);
+
+                // Adicionar colunas do otherRow, evitando duplicatas
+                for (int i = 0; i < otherRow.size(); i++) {
+                    if (i != indexOther) {
+                        mergedRow.add(otherRow.get(i));
+                    }
+                }
+
+                mergedDataNest.addRow(mergedRow);
+            }
+        }
+
+        return mergedDataNest;
+    }
+
 }
