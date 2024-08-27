@@ -1,9 +1,8 @@
 package com.project.JNest.DataNest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.project.JNest.Column.Column;
+
+import java.util.*;
 
 public class DataNest {
 
@@ -36,46 +35,39 @@ public class DataNest {
         return column;
     }
 
-    public List<Object> getColumn(String name) {
-        List<Object> column = new ArrayList<>();
+    public Column getColumn(String name) {
+        Column column = new Column();
         Integer index = headerMap.get(name);
         if (index == null) {
             throw new RuntimeException("Column " + name + " Does not exists!");
         }
+        List<Object> col = new ArrayList<>();
         for (List<Object> row : dataNest) {
             if (row.size() > index) {
-                column.add(row.get(index));
+                col.add(row.get(index));
             } else {
-                column.add(null);
+                col.add(null);
             }
         }
+        column.setColumn(col, name);
         return column;
     }
 
-    public void printColumn(String name) {
-        List<Object> column = getColumn(name);
-        if(column.isEmpty()) {
-            throw new RuntimeException("Column " + name + " Does not exists!");
-        }
-        for (int i = 0; i < Math.min(5, column.size()); i++) {
-            System.out.println(column.get(i));
-        }
-        System.out.println("...");
-        for (int i = Math.max(0, column.size() - 5); i < column.size(); i++) {
-            System.out.println(column.get(i));
-        }
-    }
-
-    public List<List<Object>> filterRows(String column, Object value) {
-        List<List<Object>> filteredRows = new ArrayList<>();
+    public DataNest filter(String column, Object value) {
+        DataNest filteredRows = new DataNest();
         Integer index = headerMap.get(column);
         if (index == null) {
             throw new RuntimeException("Column " + column + " Does not exists!");
         }
+        int rowCount = 0;
         for (List<Object> row : dataNest) {
             if (row.size() > index && row.get(index).equals(value)) {
-                filteredRows.add(row);
+                if (rowCount == 0) {
+                    filteredRows.setHeader(row);
+                }
+                filteredRows.addRow(row);
             }
+            rowCount++;
         }
         return filteredRows;
     }
@@ -100,7 +92,7 @@ public class DataNest {
         return dataNest.size();
     }
 
-    public int countColumn() {
+    public int countColumns() {
         if (dataNest.isEmpty()) {
             return 0;
         }
@@ -109,8 +101,8 @@ public class DataNest {
 
     public void addColumn(String columnName, Object data) {
         headerMap.put(columnName, headerMap.size());
-        for (int i = 0; i < dataNest.size(); i++) {
-            dataNest.get(i).add(data);
+        for (List<Object> objects : dataNest) {
+            objects.add(data);
         }
     }
 
@@ -121,6 +113,16 @@ public class DataNest {
         headerMap.put(columnName, headerMap.size());
         for (int i = 0; i < dataNest.size(); i++) {
             dataNest.get(i).add(columnData.get(i));
+        }
+    }
+
+    public void print() {
+        for (List<Object> row : dataNest) {
+            String rowLine = "";
+            for (Object cell : row) {
+                rowLine += " " + cell;
+            }
+            System.out.println(rowLine);
         }
     }
 
