@@ -12,7 +12,7 @@
 [X] addColumn(String columnName, Object data): Adiciona uma coluna com um valor padrão.
 [X] addColumn(String columnName, List<Object> columnData): Adiciona uma coluna com uma lista de dados.
 [X] print(): Imprime os dados do DataNest.
-[ ] sort(String columnName, boolean ascending): Ordena as linhas com base em uma coluna.
+[X] sort(String columnName, boolean ascending): Ordena as linhas com base em uma coluna.
 [ ] groupBy(String columnName): Agrupa as linhas com base em uma coluna.
 [ ] merge(DataNest other, String onColumn): Mescla dois DataNests com base em uma coluna.
 [ ] dropColumn(String columnName): Remove uma coluna específica.

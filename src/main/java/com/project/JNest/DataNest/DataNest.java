@@ -1,6 +1,7 @@
 package com.project.JNest.DataNest;
 
 import com.project.JNest.Column.Column;
+import com.project.JNest.DataGroup.DataGroup;
 import com.project.JNest.Utils.SortType;
 
 import java.util.*;
@@ -187,6 +188,26 @@ public class DataNest {
                 throw new IllegalArgumentException("Column values are not comparable.");
             }
         });
+    }
+
+    public DataGroup groupBy(String columnName) {
+        Integer index = headerMap.get(columnName);
+
+        if (index == null) {
+            throw new RuntimeException("Column " + columnName + " does not exist!");
+        }
+
+        Map<Object, List<List<Object>>> groupedData = new HashMap<>();
+
+        for (List<Object> row : dataNest) {
+            Object key = row.get(index);
+            groupedData.computeIfAbsent(key, k -> new ArrayList<>()).add(row);
+        }
+
+        DataGroup dg = new DataGroup();
+        dg.setData(groupedData);
+
+        return dg;
     }
 
 }
