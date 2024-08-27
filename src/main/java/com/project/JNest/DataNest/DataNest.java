@@ -1,6 +1,7 @@
 package com.project.JNest.DataNest;
 
 import com.project.JNest.Column.Column;
+import com.project.JNest.Utils.SortType;
 
 import java.util.*;
 
@@ -19,19 +20,17 @@ public class DataNest {
         dataNest.add(row);
     }
 
-    public List<List<Object>> get() {
-        return dataNest;
-    }
-
-    public List<Object> getColumn(int index) {
-        List<Object> column = new ArrayList<>();
+    public Column getColumn(int index) {
+        Column column = new Column();
+        List<Object> col = new ArrayList<>();
         for (List<Object> row : dataNest) {
             if (row.size() > index) {
-                column.add(row.get(index));
+                col.add(row.get(index));
             } else {
-                column.add(null);
+                col.add(null);
             }
         }
+        column.setColumn(col);
         return column;
     }
 
@@ -53,23 +52,18 @@ public class DataNest {
         return column;
     }
 
-    public DataNest filter(String column, Object value) {
-        DataNest filteredRows = new DataNest();
+    public void filter(String column, Object value) {
+        List<List<Object>> filteredRows = new ArrayList<>();
         Integer index = headerMap.get(column);
         if (index == null) {
             throw new RuntimeException("Column " + column + " Does not exists!");
         }
-        int rowCount = 0;
         for (List<Object> row : dataNest) {
             if (row.size() > index && row.get(index).equals(value)) {
-                if (rowCount == 0) {
-                    filteredRows.setHeader(row);
-                }
-                filteredRows.addRow(row);
+                filteredRows.add(row);
             }
-            rowCount++;
         }
-        return filteredRows;
+        dataNest = filteredRows;
     }
 
     public List<Object> getRow(int index) {
@@ -90,6 +84,20 @@ public class DataNest {
 
     public int count() {
         return dataNest.size();
+    }
+
+    public int countIf(String column, Object value) {
+        List<List<Object>> filteredRows = new ArrayList<>();
+        Integer index = headerMap.get(column);
+        if (index == null) {
+            throw new RuntimeException("Column " + column + " Does not exists!");
+        }
+        for (List<Object> row : dataNest) {
+            if (row.size() > index && row.get(index).equals(value)) {
+                filteredRows.add(row);
+            }
+        }
+        return filteredRows.size();
     }
 
     public int countColumns() {
@@ -124,6 +132,61 @@ public class DataNest {
             }
             System.out.println(rowLine);
         }
+    }
+
+    public void sort(String column) {
+        Integer index = headerMap.get(column);
+        if (index == null) {
+            throw new RuntimeException("Column " + column + " does not exist!");
+        }
+
+        dataNest.sort((row1, row2) -> {
+            Object value1 = row1.get(index);
+            Object value2 = row2.get(index);
+
+            if (value1 == null && value2 == null) {
+                return 0;
+            } else if (value1 == null) {
+                return 1;
+            } else if (value2 == null) {
+                return -1;
+            }
+
+            if (value1 instanceof Comparable && value2 instanceof Comparable) {
+                int comparison = ((Comparable<Object>) value1).compareTo(value2);
+                return comparison;
+            } else {
+                throw new IllegalArgumentException("Column values are not comparable.");
+            }
+        });
+    }
+
+    public void sort(String column, Integer sort) {
+        Integer index = headerMap.get(column);
+        if (index == null) {
+            throw new RuntimeException("Column " + column + " does not exist!");
+        }
+
+        dataNest.sort((row1, row2) -> {
+            Object value1 = row1.get(index);
+            Object value2 = row2.get(index);
+
+            if (value1 == null && value2 == null) {
+                return 0;
+            } else if (value1 == null) {
+                return sort.equals(SortType.ASC) ? -1 : 1;
+            } else if (value2 == null) {
+                return sort.equals(SortType.ASC) ? 1 : -1;
+            }
+
+            if (value1 instanceof Comparable && value2 instanceof Comparable) {
+                @SuppressWarnings("unchecked")
+                int comparison = ((Comparable<Object>) value1).compareTo(value2);
+                return sort.equals(SortType.ASC) ? comparison : -comparison;
+            } else {
+                throw new IllegalArgumentException("Column values are not comparable.");
+            }
+        });
     }
 
 }
