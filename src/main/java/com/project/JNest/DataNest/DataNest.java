@@ -192,7 +192,6 @@ public class DataNest {
 
     public DataGroup groupBy(String columnName) {
         Integer index = headerMap.get(columnName);
-
         if (index == null) {
             throw new RuntimeException("Column " + columnName + " does not exist!");
         }
