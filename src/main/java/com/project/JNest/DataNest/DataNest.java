@@ -262,4 +262,13 @@ public class DataNest {
         return new ArrayList<>(headerMap.keySet());
     }
 
+    public void lookUp(String column, Column lookUpColumn) {
+
+    }
+
+    public void lookUp(String column, Column lookUpColumn, Object value) {
+
+    }
+
+
 }
