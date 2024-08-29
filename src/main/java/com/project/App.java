@@ -24,7 +24,7 @@ public class App {
 //
 //        dataNest.print();
 
-        DataNest dn = JNest.read("C:\\Users\\labsfiap\\Desktop\\editais-covid19.xlsx");
+        DataNest dn = JNest.read("src/main/resources/editais-covid19.xlsx");
 
         System.out.println("Situação lote de vaicnação covid-19");
         System.out.println("Deserto (encerrado) " + dn.countIf("situacaoLote", "Deserto (encerrado)"));
