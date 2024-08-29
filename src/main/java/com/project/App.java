@@ -1,13 +1,7 @@
 package com.project;
 
 import com.project.JNest.JNest;
-import com.project.JNest.DataGroup.DataGroup;
 import com.project.JNest.DataNest.DataNest;
-import com.project.JNest.JNest;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class App {
     public static void main( String[] args ) {
