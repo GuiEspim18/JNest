@@ -258,4 +258,8 @@ public class DataNest {
         return mergedDataNest;
     }
 
+    public List<String> getColumns() {
+        return new ArrayList<>(headerMap.keySet());
+    }
+
 }
