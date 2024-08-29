@@ -22,7 +22,6 @@ public class Column {
         if(column.isEmpty()) {
             throw new RuntimeException("Column " + name + " Does not exists!");
         }
-        System.out.println(name);
         if (column.size() > 10) {
             for (int i = 0; i < Math.min(5, column.size()); i++) {
                 System.out.println(column.get(i));

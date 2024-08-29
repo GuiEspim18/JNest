@@ -9,6 +9,7 @@ import java.util.List;
 import com.project.JNest.DataNest.DataNest;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -27,7 +28,6 @@ public class JNest {
                 Row row = rowIterator.next();
                 Iterator<Cell> cellIterator = row.cellIterator();
 
-
                 List<Object> rowData = new ArrayList<>();
 
                 while (cellIterator.hasNext()) {
@@ -37,7 +37,11 @@ public class JNest {
                             rowData.add(cell.getStringCellValue());
                             break;
                         case NUMERIC:
-                            rowData.add(cell.getNumericCellValue());
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                rowData.add(cell.getDateCellValue());
+                            } else {
+                                rowData.add(cell.getNumericCellValue());
+                            }
                             break;
                         case BOOLEAN:
                             rowData.add(cell.getBooleanCellValue());
@@ -50,14 +54,15 @@ public class JNest {
 
                 if (rowCount == 0) {
                     dataFrame.setHeader(rowData);
+                } else {
+                    dataFrame.addRow(rowData);
                 }
-                dataFrame.addRow(rowData);
                 rowCount++;
-
             }
             return dataFrame;
 
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }
