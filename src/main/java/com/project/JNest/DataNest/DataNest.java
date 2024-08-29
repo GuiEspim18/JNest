@@ -258,19 +258,16 @@ public class DataNest {
         return mergedDataNest;
     }
 
-    public void printFirstN(int n) {
-        int rowCount = 0;
-        for (List<Object> row : dataNest) {
-            if (rowCount >= n) {
-                break;
-            }
-            StringBuilder rowLine = new StringBuilder();
-            for (Object cell : row) {
-                rowLine.append(cell).append(" ");
-            }
-            System.out.println(rowLine.toString().trim());
-            rowCount++;
-        }
+    public List<String> getColumns() {
+        return new ArrayList<>(headerMap.keySet());
+    }
+
+    public void lookUp(String column, Column lookUpColumn) {
+
+    }
+
+    public void lookUp(String column, Column lookUpColumn, Object value) {
+
     }
 
 }
